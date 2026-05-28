@@ -1,0 +1,23 @@
+{
+  "skill_name": "video-notes",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我把这个视频的内容整理成笔记：C:\\Users\\20210\\Desktop\\ai_project\\OpenCode详细攻略，开源版Claude Code，免费模型与神级插件.mp4",
+      "expected_output": "中文 Markdown 笔记，包含概述、要点总结（按主题分组）、核心结论，格式符合 SKILL.md 模板",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Summarize this video into Chinese notes: C:\\Users\\20210\\Desktop\\ai_project\\OpenCode详细攻略，开源版Claude Code，免费模型与神级插件.mp4",
+      "expected_output": "中文 Markdown 笔记，即使用户用英文提问，输出仍为中文，格式符合模板",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "我想学习这个视频的内容，帮我生成一份学习笔记",
+      "expected_output": "中文 Markdown 笔记，用户没有明确说视频文件路径，但上下文中有视频文件",
+      "files": ["C:\\Users\\20210\\Desktop\\ai_project\\OpenCode详细攻略，开源版Claude Code，免费模型与神级插件.mp4"]
+    }
+  ]
+}
