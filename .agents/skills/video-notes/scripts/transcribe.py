@@ -2,15 +2,17 @@
 """Extract audio from MP4 and transcribe using Whisper.
 
 Usage:
-    python transcribe.py <video_file> [--model MODEL] [--language LANG] [--output FILE]
+    python transcribe.py <video_file> [--model MODEL] [--language LANG] [--output FILE] [--timestamps]
 
 Examples:
     python transcribe.py "C:/Videos/lecture.mp4"
     python transcribe.py video.mp4 --model medium --language zh
     python transcribe.py video.mp4 --output transcript.txt
+    python transcribe.py video.mp4 --timestamps --output transcript.json
 """
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -96,7 +98,7 @@ def extract_audio(video_path, output_path):
         return False
 
 
-def transcribe_with_faster_whisper(audio_path, model_size="base", language=None):
+def transcribe_with_faster_whisper(audio_path, model_size="base", language=None, timestamps=False):
     """Transcribe using faster-whisper."""
     from faster_whisper import WhisperModel
 
@@ -116,18 +118,27 @@ def transcribe_with_faster_whisper(audio_path, model_size="base", language=None)
             vad_filter=True
         )
 
-        # Collect all segment texts
+        # Collect segment data
         text_parts = []
+        segments_data = []
         for segment in segments:
             text_parts.append(segment.text)
+            if timestamps:
+                segments_data.append({
+                    "start": round(segment.start, 2),
+                    "end": round(segment.end, 2),
+                    "text": segment.text.strip()
+                })
 
+        if timestamps:
+            return {"segments": segments_data}
         return " ".join(text_parts)
     except Exception as e:
         print(f"ERROR: Transcription failed: {e}", file=sys.stderr)
         return None
 
 
-def transcribe_with_whisper(audio_path, model_size="base", language=None):
+def transcribe_with_whisper(audio_path, model_size="base", language=None, timestamps=False):
     """Transcribe using original openai-whisper."""
     import whisper
 
@@ -145,13 +156,23 @@ def transcribe_with_whisper(audio_path, model_size="base", language=None):
             options["language"] = language
 
         result = model.transcribe(audio_path, **options)
+        
+        if timestamps:
+            segments_data = []
+            for segment in result["segments"]:
+                segments_data.append({
+                    "start": round(segment["start"], 2),
+                    "end": round(segment["end"], 2),
+                    "text": segment["text"].strip()
+                })
+            return {"segments": segments_data}
         return result["text"]
     except Exception as e:
         print(f"ERROR: Transcription failed: {e}", file=sys.stderr)
         return None
 
 
-def transcribe_audio(audio_path, model_size="base", language=None):
+def transcribe_audio(audio_path, model_size="base", language=None, timestamps=False):
     """Transcribe audio using available whisper implementation."""
     has_whisper, whisper_type, _ = check_whisper()
 
@@ -164,9 +185,9 @@ def transcribe_audio(audio_path, model_size="base", language=None):
         return None
 
     if whisper_type == "faster-whisper":
-        return transcribe_with_faster_whisper(audio_path, model_size, language)
+        return transcribe_with_faster_whisper(audio_path, model_size, language, timestamps)
     else:
-        return transcribe_with_whisper(audio_path, model_size, language)
+        return transcribe_with_whisper(audio_path, model_size, language, timestamps)
 
 
 def main():
@@ -179,6 +200,8 @@ def main():
                        help="Whisper model size (default: base)")
     parser.add_argument("--language", help="Force language (e.g., zh, en, ja)")
     parser.add_argument("--output", help="Save transcript to file instead of stdout")
+    parser.add_argument("--timestamps", action="store_true",
+                       help="Output segments with timestamps as JSON")
     args = parser.parse_args()
 
     # Validate video file
@@ -230,7 +253,7 @@ def main():
             sys.exit(1)
 
         # Transcribe
-        transcript = transcribe_audio(audio_path, args.model, args.language)
+        transcript = transcribe_audio(audio_path, args.model, args.language, args.timestamps)
 
     if transcript is None:
         print("ERROR: Transcription failed.", file=sys.stderr)
@@ -238,11 +261,18 @@ def main():
 
     # Output
     if args.output:
-        with open(args.output, 'w', encoding='utf-8') as f:
-            f.write(transcript)
+        if args.timestamps:
+            with open(args.output, 'w', encoding='utf-8') as f:
+                json.dump(transcript, f, ensure_ascii=False, indent=2)
+        else:
+            with open(args.output, 'w', encoding='utf-8') as f:
+                f.write(transcript)
         print(f"Transcript saved to: {args.output}", file=sys.stderr)
     else:
-        print(transcript)
+        if args.timestamps:
+            print(json.dumps(transcript, ensure_ascii=False, indent=2))
+        else:
+            print(transcript)
 
     print("Done!", file=sys.stderr)
 

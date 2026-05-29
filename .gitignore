@@ -41,3 +41,13 @@ Thumbs.db
 *.tmp
 *.temp
 *.log
+
+# Video files
+*.mp4
+
+# Transcript files
+transcript.txt
+transcript.json
+
+# Screenshots directory
+screenshots/
