@@ -17,22 +17,16 @@ Run the bundled transcription script to extract audio from the MP4 and transcrib
 python <skill-path>/scripts/transcribe.py "<video_file_path>"
 ```
 
-**With timestamps (for screenshots):**
-```bash
-python <skill-path>/scripts/transcribe.py "<video_file_path>" --timestamps --output transcript.json
-```
-
 The script will:
 1. Check if `ffmpeg` and `whisper` are installed; if not, print installation instructions and exit
 2. Extract audio from the MP4 file using ffmpeg
 3. Transcribe the audio to text using Whisper
-4. Output the transcribed text to stdout (or JSON with `--timestamps`)
+4. Output the transcribed text to stdout
 
 **Options:**
 - `--model MODEL`: Whisper model size (tiny, base, small, medium, large). Default: base
 - `--language LANG`: Force a specific language (e.g., zh, en, ja). Default: auto-detect
 - `--output FILE`: Save transcript to a file instead of stdout
-- `--timestamps`: Output segments with timestamps as JSON (needed for screenshots)
 
 If the transcription fails, inform the user and ask them to check the video file.
 
@@ -51,61 +45,9 @@ Read through the full transcript carefully and identify ALL of the following:
 9. **Tips and tricks** — any bonus tips, shortcuts, or best practices mentioned
 10. **Core conclusions** — what are the main takeaways?
 
-**CRITICAL**: Be thorough and comprehensive. Do NOT skip or condense content. Every important point from the video should appear in the notes.
+**IMPORTANT**: Be thorough and comprehensive. Do NOT skip or condense content. Every important point from the video should appear in the notes.
 
-**零遗漏检查清单**：
-- [ ] 视频中提到的每一个命令都已记录
-- [ ] 视频中提到的每一个快捷键都已记录
-- [ ] 视频中提到的每一个操作步骤都已记录
-- [ ] 视频中提到的每一个工具都已记录
-- [ ] 视频中提到的每一个概念都已记录
-- [ ] 视频中提到的每一个技巧都已记录
-- [ ] 视频中提到的每一个注意事项都已记录
-- [ ] 视频中提到的每一个示例都已记录
-
-### Step 3: Capture Screenshots (Optional)
-
-If the user requests screenshots or the video contains visual demonstrations, capture key frames at important timestamps.
-
-First, identify the timestamps for key points from the transcript segments. Then run:
-
-```bash
-python <skill-path>/scripts/screenshot.py "<video_file_path>" --times TIME1 TIME2 TIME3 --output "<video_dir>/screenshots"
-```
-
-**Options:**
-- `--times TIME [TIME ...]`: Timestamps to capture (seconds or MM:SS format)
-- `--json FILE`: Use segments JSON from transcribe.py to auto-capture at segment starts
-- `--output DIR`: Output directory (default: screenshots)
-- `--prefix NAME`: Filename prefix (default: screenshot)
-
-**Using JSON segments (recommended):**
-```bash
-python <skill-path>/scripts/screenshot.py "<video_file_path>" --json transcript.json --output "<video_dir>/screenshots" --prefix "<video_name>"
-```
-
-The script will:
-1. Capture screenshots at specified timestamps using ffmpeg
-2. Save as JPEG files in the output directory
-3. Output a JSON array with file paths and timestamps
-
-**When to capture screenshots:**
-- Tutorial/demo steps where visual context helps
-- Code demonstrations or terminal output
-- Diagrams, charts, or visual explanations
-- UI/interface demonstrations
-- Any point where "seeing" is better than reading
-
-**Screenshot timing best practices:**
-- Capture AFTER an action completes, not during (e.g., after a page loads, not while typing)
-- Capture the RESULT of an operation, not the process
-- For UI demos, capture when the final interface is visible
-- For terminal commands, capture after the command output appears
-- Avoid capturing transition animations or loading states
-
-**Note**: Don't over-screenshot. Typically 10-15 screenshots per 20-minute video is sufficient for tutorial content. Focus on visual-heavy content where text alone isn't enough.
-
-### Step 4: Generate Notes
+### Step 3: Generate Notes
 
 Output the notes in this format. Always write in Chinese, regardless of the video's original language.
 
@@ -118,70 +60,33 @@ Output the notes in this format. Always write in Chinese, regardless of the vide
 
 [3-5 句话详细概括视频的核心内容、目标受众和价值]
 
-## 命令速查表
-
-视频中出现的所有命令和操作，方便快速查找：
-
-| 命令/操作 | 功能说明 | 使用场景 | 备注 |
-|---|---|---|---|
-| `命令1` | 功能描述 | 何时使用 | 注意事项 |
-| `命令2` | 功能描述 | 何时使用 | 注意事项 |
-
-## 快捷键
-
-视频中提到的所有快捷键：
-
-| 快捷键 | 功能 | 备注 |
-|---|---|---|
-| `Ctrl + X` | 功能说明 | 使用场景 |
-| `Shift + Tab` | 功能说明 | 使用场景 |
-
 ## 要点总结
 
 ### 1. [主题一]
-
-![截图](screenshots/xxx_001.jpg) <!-- 如有截图，在要点前插入 -->
-
-- **概述**：[一句话概括本主题]
-- **核心知识点**：
-  - 知识点 1
-  - 知识点 2
-- **详细说明**：
-  - 要点 1
-    - 细节 a
-    - 细节 b
-    - 细节 c
-  - 要点 2
-    - 细节 a
-    - 细节 b
-- **命令/操作**（如适用）：
-  - `命令1`：功能说明
-  - `命令2`：功能说明
-- **注意事项**：
-  - 注意 1
-  - 注意 2
+- 要点 1
+  - 细节 a
+  - 细节 b
+  - 细节 c
+- 要点 2
+  - 细节 a
+  - 细节 b
+- 要点 3
+  - 具体步骤或说明
 
 ### 2. [主题二]
+- 要点 1
+  - 细节 a
+  - 细节 b
+- 要点 2
+  - 细节 a
+  - 细节 b
 
-![截图](screenshots/xxx_002.jpg) <!-- 截图放在主题标题后、要点前 -->
+### 3. [主题三]
+- 要点 1
+- 要点 2
+- 要点 3
 
-- **概述**：[一句话概括本主题]
-- **核心知识点**：
-  - 知识点 1
-  - 知识点 2
-- **详细说明**：
-  - 要点 1
-    - 细节 a
-    - 细节 b
-  - 要点 2
-    - 细节 a
-    - 细节 b
-- **命令/操作**（如适用）：
-  - `命令1`：功能说明
-- **注意事项**：
-  - 注意 1
-
-[继续添加所有主题，不要遗漏任何知识点...]
+[继续添加所有主题，不要遗漏...]
 
 ## 操作步骤（如适用）
 
@@ -190,31 +95,12 @@ Output the notes in this format. Always write in Chinese, regardless of the vide
 1. **步骤一**：[描述]
    - 具体操作：[详细说明]
    - 命令/代码：`[如有]`
-   - 预期结果：[执行后应该看到什么]
-   - 注意事项：[常见错误或坑点]
 
 2. **步骤二**：[描述]
    - 具体操作：[详细说明]
    - 命令/代码：`[如有]`
-   - 预期结果：[执行后应该看到什么]
-   - 注意事项：[常见错误或坑点]
 
 [继续所有步骤...]
-
-## 常见问题与解决
-
-视频中提到的常见问题和解决方案：
-
-| 问题 | 原因 | 解决方法 |
-|---|---|---|
-| [问题1] | [原因] | [解决方案] |
-| [问题2] | [原因] | [解决方案] |
-
-## 最佳实践
-
-视频中提到的最佳实践和建议：
-- [实践1]：[详细说明]
-- [实践2]：[详细说明]
 
 ## 工具/资源列表
 
@@ -270,25 +156,22 @@ Output the notes in this format. Always write in Chinese, regardless of the vide
 - [启发 2]
 ```
 
-### Step 5: Save to File
+### Step 4: Save to File
 
 After generating the notes, save them to a Markdown file:
 
 1. Use the video filename (without extension) as the output filename
 2. Save to the same directory as the video file
 3. Add `.md` extension
-4. If screenshots were captured, the `screenshots/` folder should be in the same directory as the notes
 
 For example:
 - Input: `C:\Videos\OpenCode教程.mp4`
 - Output: `C:\Videos\OpenCode教程笔记.md`
-- Screenshots: `C:\Videos\screenshots\`
 
 Use the Write tool to save the file, then inform the user of the file path.
 
 ## Guidelines
 
-- **零遗漏原则** — 视频中提到的每一个知识点、每一个命令、每一个操作、每一个技巧都必须记录在笔记中，不允许跳过或省略任何内容
 - **Always output in Chinese** — even if the video is in English, Japanese, or any other language
 - **Be faithful to the source** — summarize what was actually said, not what you think should have been said
 - **Be comprehensive** — cover ALL important points, don't skip or condense content
@@ -300,13 +183,6 @@ Use the Write tool to save the file, then inform the user of the file path.
 - **Include ALL commands** — if specific commands or code are shown, include them verbatim
 - **Capture ALL comparisons** — any comparisons between tools or approaches should be included
 - **Note ALL tips** — any bonus tips, shortcuts, or best practices should be captured
-- **Screenshot selectively** — only capture frames where visual context adds value (demos, diagrams, UI). Aim for 10-15 screenshots per 20-min tutorial video
-- **Place screenshots well** — insert `![desc](path)` right before the section it illustrates, not after
-- **Optimize for review** — notes should be detailed enough for later review; include all commands, shortcuts, and step-by-step procedures
-- **Create command reference** — always include a "命令速查表" section listing ALL commands mentioned in the video
-- **List all shortcuts** — always include a "快捷键" section with ALL keyboard shortcuts mentioned
-- **Detail every operation** — for each command/operation, include: exact syntax, what it does, when to use it, expected output, common pitfalls
-- **No knowledge point left behind** — if the video mentions something even briefly, it must appear in the notes
 
 ## Error Handling
 
@@ -343,8 +219,6 @@ pip install faster-whisper
 
 ## Example Usage
 
-### Basic Notes (No Screenshots)
-
 **User**: "帮我把这个视频整理成笔记：C:\Videos\lecture.mp4"
 
 **Steps**:
@@ -354,19 +228,3 @@ pip install faster-whisper
 4. Generate comprehensive structured Chinese Markdown notes
 5. Save to: `C:\Videos\lecture笔记.md`
 6. Inform user: "笔记已保存到 C:\Videos\lecture笔记.md"
-
-### Notes with Screenshots
-
-**User**: "帮我整理这个教程视频的笔记，关键步骤要截图"
-
-**Steps**:
-1. Run: `python <skill-path>/scripts/transcribe.py "C:\Videos\tutorial.mp4" --timestamps --output "C:\Videos\transcript.json"`
-2. Read the transcript JSON (segments with timestamps)
-3. Analyze content — identify themes AND note timestamps for visual demos
-4. Capture screenshots at key visual moments:
-   ```bash
-   python <skill-path>/scripts/screenshot.py "C:\Videos\tutorial.mp4" --json "C:\Videos\transcript.json" --output "C:\Videos\screenshots" --prefix "tutorial"
-   ```
-5. Generate notes with `![截图](screenshots/xxx.jpg)` before relevant sections
-6. Save to: `C:\Videos\tutorial笔记.md`
-7. Inform user: "笔记已保存到 C:\Videos\tutorial笔记.md，截图在 C:\Videos\screenshots/"
