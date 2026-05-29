@@ -51,3 +51,6 @@ transcript.json
 
 # Screenshots directory
 screenshots/
+
+# Notes files
+*笔记.md
